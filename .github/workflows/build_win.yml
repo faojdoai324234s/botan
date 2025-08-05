@@ -1,9 +1,5 @@
 name: Windows Build
 
-permissions:
-  contents: read
-  # implicitly all other scopes not listed become none
-
 on:
   push:
     branches: [ master ]
@@ -17,7 +13,6 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
       - name: Install Visual Studio platform toolset
         shell: cmd
         run: |
