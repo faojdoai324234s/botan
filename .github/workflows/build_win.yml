@@ -9,57 +9,36 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-# cancel running workflows when new commits are being pushed in pull requests
-# but not on the master branch
-concurrency:
-  group: ${{ github.workflow }} @ ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
-
+env:
+  triplet: x64-windows-custom
+  
 jobs:
-  windows:
-    name: "Windows"
-    strategy:
-      fail-fast: false
-
-      matrix:
-        include:
-          - target: shared
-            arch: x86_64
-            host_os: windows-2022
-          - target: static
-            arch: x86_64
-            host_os: windows-2022
-          - target: amalgamation
-            arch: x86_64
-            host_os: windows-2022
-
-    runs-on: ${{ matrix.host_os }}
-
+  build:
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+      - name: Install Visual Studio platform toolset
+        shell: cmd
+        run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --includeRecommended ^
+          --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ^
+          --productId Microsoft.VisualStudio.Product.Enterprise ^
+          --channelId VisualStudio.15.Release ^
+          --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
 
-      - name: Read Repository Configuration
-        uses: ./.github/actions/read-repo-config
-
-      - name: Setup Build Agent
-        uses: ./.github/actions/setup-build-agent
-        with:
-          target: ${{ matrix.target }}
-          cache-key: ${{ matrix.host_os }}-msvc-${{ matrix.arch }}-${{ matrix.target }}
-          arch: ${{ matrix.arch }}
-
-      - name: Build and Test Botan
-        run: python3 ./src/scripts/ci_build.py --cc='msvc' --make-tool='ninja' --cpu='${{ matrix.arch }}' --test-results-dir=junit_results ${{ matrix.target }}
-
-      - name: Install Botan
-        run: python3 ./src/scripts/install.py --make-tool='ninja' --cpu='${{ matrix.arch }}'
+      - name: Build Botan
+        shell: cmd
+        run: |
+          git clone https://github.com/microsoft/vcpkg
+          cd vcpkg
+          copy /y /v ${{github.workspace}}\${{ env.triplet }}.cmake triplets
+          vcpkg install botan botan:${{ env.triplet }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Botan-win-${{ matrix.target }}
-          path: ${{github.workspace}}
+          name: Windows-artifact
+          path: ${{github.workspace}}/vcpkg/installed/${{ env.triplet }}
           if-no-files-found: ignore
           include-hidden-files: true
           retention-days: 0
