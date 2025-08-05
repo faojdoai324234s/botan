@@ -52,6 +52,9 @@ jobs:
       - name: Build and Test Botan
         run: python3 ./src/scripts/ci_build.py --cc='msvc' --make-tool='ninja' --cpu='${{ matrix.arch }}' --test-results-dir=junit_results ${{ matrix.target }}
 
+      - name: Install Botan
+        run: python3 ./src/scripts/install.py
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
