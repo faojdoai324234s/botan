@@ -11,15 +11,13 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.2X
       - name: Install Visual Studio platform toolset
         shell: cmd
         run: |
           "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --includeRecommended ^
           --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ^
           --productId Microsoft.VisualStudio.Product.Enterprise ^
+          --channelUri https://aka.ms/vs/15/release/channel ^
           --channelId VisualStudio.15.Release ^
           --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
 
@@ -32,7 +30,7 @@ jobs:
       - name: Build Botan
         shell: cmd
         run: |
-          python3 configure.py --cc=msvc --os=windows --cpu=x86_64
+          python3a configure.py --cc=msvc --os=windows --cpu=x86_64
           nmake
           nmake check
           nmake install
