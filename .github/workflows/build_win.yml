@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.1X
       - name: Install Visual Studio platform toolset
         shell: cmd
         run: |
