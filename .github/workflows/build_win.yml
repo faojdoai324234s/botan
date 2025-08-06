@@ -11,16 +11,18 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+      - name: Install Visual Studio platform toolset
+        shell: cmd
+        run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" --channelId VisualStudio.16.Release --quiet --includeRecommended --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\"
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\"
+
       - name: Install Visual Studio build tools
         shell: cmd
         run: |
           vs_buildtools.exe –quiet –add Microsoft.VisualStudio.Workload.VCTools –includeOptional
           
-      - name: Install Visual Studio platform toolset
-        shell: cmd
-        run: |
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" --channelId VisualStudio.15.Release --quiet --includeRecommended --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
-        
       - name: Install Visual Studio platform toolset again
         shell: cmd
         run: |
