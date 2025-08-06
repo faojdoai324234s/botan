@@ -14,7 +14,7 @@ jobs:
       - name: Install Visual Studio platform toolset
         shell: cmd
         run: |
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vs_installer.exe" modify --quiet --includeRecommended --includeOptional --downloadThenInstall ^
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --includeRecommended --includeOptional --downloadThenInstall ^
           --installPath "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise" ^
           --productId Microsoft.VisualStudio.Product.Enterprise ^
           --channelId VisualStudio.15.Release ^
