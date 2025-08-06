@@ -15,7 +15,7 @@ jobs:
         shell: cmd
         run: |
           "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --includeRecommended ^
-          --installPath "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\" ^
+          --installPath "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise" ^
           --productId Microsoft.VisualStudio.Product.Enterprise ^
           --channelUri https://aka.ms/vs/15/release/channel ^
           --channelId VisualStudio.15.Release ^
