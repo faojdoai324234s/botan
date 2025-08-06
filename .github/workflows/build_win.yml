@@ -29,9 +29,10 @@ jobs:
       - name: List directories
         shell: cmd
         run: |
-          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\MSBuild"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\"
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current"
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\MSBuild\Sdks"
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\"
+          dir "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\"
         
       - name: Build Botan
         shell: cmd
