@@ -1,0 +1,45 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ release-2 ]
+  pull_request:
+    branches: [ release-2 ]
+  
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Install Visual Studio platform toolset
+        shell: cmd
+        run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --includeRecommended ^
+          --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" ^
+          --productId Microsoft.VisualStudio.Product.Enterprise ^
+          --channelId VisualStudio.15.Release ^
+          --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
+
+      - name: List directories
+        shell: cmd
+        run: |
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\"
+        
+      - name: Build Botan
+        shell: cmd
+        run: |
+          python3 configure.py --cc=msvc --os=windows --cpu=x86_64
+          nmake
+          nmake check
+          nmake install
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-artifact
+          path: ${{github.workspace}}
+          if-no-files-found: ignore
+          include-hidden-files: true
+          retention-days: 0
